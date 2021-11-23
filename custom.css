@@ -1,0 +1,44 @@
+@import url('https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css');
+@import url('https://fonts.googleapis.com/earlyaccess/nanumbrushscript.css');
+@import url('https://fonts.googleapis.com/earlyaccess/nanumpenscript.css');
+
+html, body, h1, h2, h3, h4, h5, h6, li, p {font-family:'Spoqa Han Sans Neo', 'sans-serif';}
+
+.remark-slide-content h2 {
+    font-size: 40px;
+}
+
+.remark-slide-content p, li {
+    font-size: 30px;
+}
+
+.pen-b {
+  font-family: 'Nanum Brush Script', cursive;
+  font-size: 130%;
+}
+
+.pen-p {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 130%;
+}
+
+.fb-blue {
+  color: #3b5998;
+}
+
+.mm-purple {
+  color: #7912af;
+}
+
+.kt-yellow {
+  color: #FFCB01;
+}
+
+.gh-gray {
+  color: #7f7f7f;
+}
+
+.large { font-size: 130%; }
+.small { font-size: 70%; }
+.tiny  { font-size: 40%;  }
+.strong { font-weight: bold; }

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R 사용자를 위해 만들면서 배우는 백엔드 개발 기초 상식</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="박찬엽" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+layout: true
+
+background-image: url(https://user-images.githubusercontent.com/6179259/142911700-9cf2412d-b647-440d-8ac1-ee159371a0e5.png)
+background-size: cover
+
+&lt;div style="position: absolute; bottom:17px;"&gt;
+  .center[.strong[&lt;https://mrchypark.github.io/backendr&gt;]]
+&lt;/div&gt;
+
+---
+class: middle, title-slide
+
+### .pen-b[R 사용자] 를 위한
+# .mm-purple[만들면서 배우는] 백엔드 개발 기초 상식
+
+## 박찬엽
+
+---
+
+
+.pull-left[
+## .mm-purple[발표자 소개]
+&lt;figure&gt;
+  &lt;img width=100% src="https://avatars2.githubusercontent.com/u/6179259?v=4&amp;s=460"&gt;
+&lt;/figure&gt;
+]
+.pull-right[
+&lt;br&gt;
+## 박찬엽
+
+- SKTelecom T3K 소속 개발자
+&gt; msa, k8s, golang 등
+
+- R 패키지 개발자
+&gt; sendgridr, tqk, N2H4 등
+
+
+- mrchypark@gmail.com
+- .fb-blue[**FACEBOOK**]@[mrchypark](https://www.facebook.com/mrchypark)
+- .gh-gray[**GITHUB**]@[mrchypark](https://github.com/mrchypark)
+]
+
+---
+
+class: middle, title-slide
+
+# R로 json API 서버를 만들어보자
+
+---
+
+## 백엔드 패키지
+
+1. plumber
+1. restRserve
+1. fiery
+
+---
+## plumber &lt;img width=10% align="right" src="https://d33wubrfki0l68.cloudfront.net/12b1afed2d316669477cd6d2279ec16bf77e5299/3dd35/blog/plumber-v1-1-0/a-plumber-hex_hu809d598a2c0f9a24072c554169c3ab06_231665_2220x0_resize_box_2.png"&gt;
+
+&lt;https://www.rplumber.io/&gt;
+- Rsutdio 가 관리하는 패키지
+- 분석가 친화적인 문법과 개발자 친화적인 문법 모두 제공
+- 풍부한 설명서와 안정적인 버전 상태(1.1.x)
+- 활발히 개발 및 유지 보수 중
+- 간단한 문법
+- 많은 편의 기능
+
+---
+## restRserve &lt;img width=30% align="right" src="https://github.com/rexyai/RestRserve/raw/master/man/figures/logo.png"&gt;
+
+&lt;https://restrserve.org/&gt;
+- 빠른 성능을 목표로 개발
+- 개발자 친화적인 문법과 설계
+- 초기 상태의 개발 버전(0.4.1)
+- (아마도) 개인 개발자가 관리
+- 2020년 말 이후 개발 진행이 없음
+
+---
+## fiery &lt;img width=20% align="right" src="https://github.com/thomasp85/fiery/raw/master/man/figures/fiery.png"&gt;
+
+&lt;https://fiery.data-imaginist.com/&gt;
+- 가벼운 서버 패키지를 목표로 개발(shiny와 비교하여)
+- 자유도 높은 개발이 가능한 기반 패키지의 성격
+- 안정화 상태의 개발 버전(1.1.x)
+- 개인 개발자가 관리
+- 2020년 말 이후 개발 진행이 없음
+
+---
+class: middle, title-slide
+
+## 어떤 패키지를 선택할까요?
+
+---
+class: middle, title-slide
+
+## 실습에는 .mm-purple[plumber] 를 사용합니다.
+
+---
+.pull-left[
+
+## Quick Start!
+
+```r
+#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg="") {
+  list(msg = paste0("txt: '", msg, "'"))
+}
+
+#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function() {
+  rand &lt;- rnorm(100)
+  hist(rand)
+}
+
+#* Return the sum of two numbers
+#* @param a The first number to add
+#* @param b The second number to add
+#* @post /sum
+function(a, b) {
+  as.numeric(a) + as.numeric(b)
+}
+```
+]
+.pull-right[
+
+]
+
+---
+
+.pull-left[
+
+## 주석
+
+```r
+*#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg="") {
+  list(msg = paste0("txt: '", msg, "'"))
+}
+
+*#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function() {
+  rand &lt;- rnorm(100)
+  hist(rand)
+}
+
+*#* Return the sum of two numbers
+#* @param a The first number to add
+#* @param b The second number to add
+#* @post /sum
+function(a, b) {
+  as.numeric(a) + as.numeric(b)
+}
+```
+]
+.pull-right[
+&lt;br&gt;
+설명문
+
+- 각 api를 대표하는 설명을 작성
+]
+
+---
+
+.pull-left[
+
+## 주석
+
+```r
+#* Echo back the input
+*#* @param msg The message to echo
+#* @get /echo
+function(msg="") {
+  list(msg = paste0("txt: '", msg, "'"))
+}
+
+#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function() {
+  rand &lt;- rnorm(100)
+  hist(rand)
+}
+
+#* Return the sum of two numbers
+*#* @param a The first number to add
+*#* @param b The second number to add
+#* @post /sum
+function(a, b) {
+  as.numeric(a) + as.numeric(b)
+}
+```
+]
+.pull-right[
+&lt;br&gt;
+param
+
+- 함수에서 사용할 값을 전달받음
+- plot 처럼 없는 경우도 있음
+]
+
+---
+
+.pull-left[
+
+## 주석
+
+```r
+#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg="") {
+  list(msg = paste0("txt: '", msg, "'"))
+}
+
+#* Plot a histogram
+*#* @serializer png
+#* @get /plot
+function() {
+  rand &lt;- rnorm(100)
+  hist(rand)
+}
+
+#* Return the sum of two numbers
+#* @param a The first number to add
+#* @param b The second number to add
+#* @post /sum
+function(a, b) {
+  as.numeric(a) + as.numeric(b)
+}
+```
+]
+.pull-right[
+&lt;br&gt;
+serializer
+
+- serialize 는 직열화
+- 일반적인 구조로 변환하여 저장함
+- R 객체 -&gt; JSON 등
+
+- 다른 두 함수는 JSON이 기본값
+]
+
+---
+
+## serializer
+
+Annotation | Content Type | Description/References
+---------- | ------------ | ---------------------
+`@serializer contentType` | (user supplied) | Send response with a particular `Content-Type` header
+`@serializer html` | `text/html; charset=UTF-8` | Passes response through without any additional serialization
+`@serializer json` | `application/json` | Object processed with `jsonlite::toJSON()`
+`@serializer unboxedJSON` | `application/json` | Object processed with `jsonlite::toJSON(auto_unbox=TRUE)`
+`@serializer rds` | `application/rds` | Object processed with `base::serialize()`
+`@serializer csv` | `text/csv` | Object processed with `readr::format_csv()`
+`@serializer tsv` | `text/tab-separated-values` | Object processed with `readr::format_tsv()`
+
+
+---
+## serializer
+
+Annotation | Content Type | Description/References
+---------- | ------------ | ---------------------
+`@serializer feather` | `application/feather` | Object processed with `feather::write_feather()`
+`@serializer yaml` | `text/x-yaml` | Object processed with `yaml::as_yaml()`
+`@serializer htmlwidget` | `text/html; charset=utf-8` | `htmlwidgets::saveWidget()`
+`@serializer text` | `text/plain` | Text output processed by `as.character()`
+`@serializer format` | `text/plain` | Text output processed by `format()`
+`@serializer print` | `text/plain` | Text output captured from `print()`
+`@serializer cat` | `text/plain` | Text output captured from `cat()`
+`@serializer jpeg` | `image/jpeg` | Images created with `jpeg()`
+`@serializer png` | `image/png` | Images created with `png()`
+
+
+---
+
+.pull-left[
+
+## 주석
+
+```r
+#* Echo back the input
+#* @param msg The message to echo
+*#* @get /echo
+function(msg="") {
+  list(msg = paste0("txt: '", msg, "'"))
+}
+
+#* Plot a histogram
+#* @serializer png
+*#* @get /plot
+function() {
+  rand &lt;- rnorm(100)
+  hist(rand)
+}
+
+#* Return the sum of two numbers
+#* @param a The first number to add
+#* @param b The second number to add
+*#* @post /sum
+function(a, b) {
+  as.numeric(a) + as.numeric(b)
+}
+```
+]
+.pull-right[
+&lt;br&gt;
+http method와 경로
+
+- 요청해야 하는 방법과 주소
+]
+
+---
+
+## http/1.1 표준 명세
+
+![](https://github.com/mrchypark/apiR/blob/master/docs/img/http.png?raw=true)
+
+---
+
+## 경로
+
+- route, endpoint, url, uri, resource 등 다양한 이름
+- 각각의 엄밀한 정의가 있지만 URI를 알아둘 것
+
+![](https://feel5ny.github.io/images/2019/19/01.jpg)
+* 출처: https://feel5ny.github.io/2019/08/09/HTTP_002/
+---
+class: middle, title-slide
+
+## 개발자와 일하기
+
+---
+
+## 백엔드 개발 공부 로드맵
+
+[![](https://user-images.githubusercontent.com/6179259/142961158-1477376f-b38d-43b3-9a12-860a1ca26ebb.png)](https://github.com/kamranahmedse/developer-roadmap/blob/master/translations/korean/README.md)
+
+---
+
+## 인터페이스
+
+- 개발자와 소통하는 방식
+
+---
+class: middle, title-slide
+
+## 인프라와 일하기
+
+---
+
+## http/1.1 표준 명세
+
+![](https://github.com/mrchypark/apiR/blob/master/docs/img/http.png?raw=true)
+
+
+
+---
+12 factor app
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
