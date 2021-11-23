@@ -360,9 +360,35 @@ class: middle, title-slide
 
 ---
 
-## 인터페이스
+## API
 
-- 개발자와 소통하는 방식
+Application Programming Interface
+
+---
+
+## API
+
+.mm-purple[**Application**] Programming Interface
+
+- 운영체재 프로그램을 제외한 모든 **응용** 프로그램을 뜻함.
+- application program 에서 앞에만 사용한 것.
+- app 도 더 줄여서 사용
+
+---
+
+## API
+
+Application .mm-purple[**Programming**] Interface
+
+- 어플리케이션을 개발하는 것
+
+---
+
+## API
+
+Application Programming .mm-purple[**Interface**]
+
+![](https://user-images.githubusercontent.com/6179259/142968618-2afa226d-1a4d-4775-884d-8d2a72342f79.png)
 
 ---
 class: middle, title-slide
